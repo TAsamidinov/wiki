@@ -39,7 +39,23 @@ def search (request):
             "title": query,
             "content": content
         })    
-    
+
+def new_page (request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+
+        if util.get_entry(title) is not None:
+            return render(request, "encyclopedia/error.html", {
+                "message": "Entry already exists."
+            })
+
+        util.save_entry(title, content)
+        return render(request, "encyclopedia/entry.html", {
+            "title": title,
+            "content": markdown2.markdown(content)
+        })
+    return render (request, "encyclopedia/new_page.html")
 
 
 
