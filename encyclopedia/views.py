@@ -57,5 +57,16 @@ def new_page (request):
         })
     return render (request, "encyclopedia/new_page.html")
 
-
+def edit_page (request, title):
+    if request.method == "POST":
+        content = request.POST.get("content")
+        util.save_entry(title, content)
+        return render(request, "encyclopedia/entry.html", {
+            "title": title,
+            "content": markdown2.markdown(content)
+        })
+    return render(request, "encyclopedia/edit_page.html", {
+        "title": title,
+        "content": util.get_entry(title)
+    })
 
