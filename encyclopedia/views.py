@@ -1,0 +1,45 @@
+from django.shortcuts import render
+from . import util
+import markdown2
+
+
+def index(request):
+    return render(request, "encyclopedia/index.html", {
+        "entries": util.list_entries()
+    })
+
+def entry (request, title):
+    entry_content = util.get_entry(title)
+
+    if (entry_content is None):
+        return render(request, "encyclopedia/error.html", {
+            "message": "Entry not found."
+        })
+    else:
+        content = markdown2.markdown(entry_content)
+        return render(request, "encyclopedia/entry.html", {
+            "title": title,
+            "content": content
+        })
+
+def search (request):
+    query = request.GET.get("q", "")
+    entry_content = util.get_entry(query)
+    entries = util.list_entries()
+
+    if (entry_content is None):
+        
+        return render(request, "encyclopedia/results.html", {
+            "entries": [entry for entry in entries if query in entry],
+            "query": query,
+        })
+    else:
+        content = markdown2.markdown(entry_content)
+        return render(request, "encyclopedia/entry.html", {
+            "title": query,
+            "content": content
+        })    
+    
+
+
+
