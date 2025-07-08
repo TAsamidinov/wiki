@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from . import util
 import markdown2
-
+import random
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -70,3 +70,8 @@ def edit_page (request, title):
         "content": util.get_entry(title)
     })
 
+def random_page(request):
+    entries = util.list_entries()
+    random_title = random.choice(entries)
+    
+    return entry(request, random_title)
